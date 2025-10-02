@@ -418,6 +418,35 @@
             margin-top: 15px;
         }
 
+        /* Modificar los estilos del modal para móviles */
+        @media (max-width: 768px) {
+            #pickupModal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #pickupModal > div {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                max-height: 80vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                width: 90%;
+                margin: 0 !important;
+                padding: 20px;
+                border-radius: var(--border-radius);
+                background-color: white;
+                box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+            }
+        }
+
         @media (max-width: 1024px) {
             .container {
                 max-width: 95%;
@@ -1409,8 +1438,14 @@
         
         // Open pickup modal
         function openPickupModal(materialId) {
+            const modal = document.getElementById('pickupModal');
             document.getElementById('pickupMaterialId').value = materialId;
-            document.getElementById('pickupModal').style.display = 'block';
+            modal.style.display = 'block';
+            
+            // Prevenir scroll del body en móviles
+            if (window.innerWidth <= 768) {
+                document.body.style.overflow = 'hidden';
+            }
             
             // Reset pickup photos
             pickupPhotosData = [];
@@ -1422,8 +1457,12 @@
         
         // Close pickup modal
         function closePickupModal() {
-            document.getElementById('pickupModal').style.display = 'none';
+            const modal = document.getElementById('pickupModal');
+            modal.style.display = 'none';
             document.getElementById('pickupForm').reset();
+            
+            // Restaurar scroll del body
+            document.body.style.overflow = '';
             
             // Stop pickup camera if running
             stopPickupCamera();
@@ -1636,6 +1675,53 @@
                     }
                 }, false);
             });
+
+            // Reemplazar el manejo de eventos touch para el modal de pickup
+            const pickupModal = document.getElementById('pickupModal');
+            const modalContent = pickupModal.querySelector('div');
+            
+            let startY = 0;
+            let startTime = 0;
+            const MIN_DISTANCE = 100; // Mínima distancia para considerar un swipe
+            const MAX_TIME = 300; // Tiempo máximo para considerar un swipe en ms
+
+            pickupModal.addEventListener('touchstart', (e) => {
+                // Solo registrar el touch si es fuera del contenido del modal
+                if (e.target === pickupModal) {
+                    startY = e.touches[0].clientY;
+                    startTime = Date.now();
+                }
+            }, { passive: true });
+
+            pickupModal.addEventListener('touchend', (e) => {
+                // Solo procesar si el touch comenzó fuera del contenido del modal
+                if (e.target === pickupModal) {
+                    const endY = e.changedTouches[0].clientY;
+                    const endTime = Date.now();
+                    const diffY = Math.abs(endY - startY);
+                    const diffTime = endTime - startTime;
+
+                    // Solo cerrar si fue un toque rápido, no un scroll
+                    if (diffY < 10 && diffTime < 300) {
+                        closePickupModal();
+                    }
+                }
+            }, { passive: true });
+
+            // Prevenir scroll en el fondo cuando el modal está abierto
+            modalContent.addEventListener('touchmove', (e) => {
+                e.stopPropagation();
+                const isAtTop = modalContent.scrollTop === 0;
+                const isAtBottom = modalContent.scrollHeight - modalContent.scrollTop === modalContent.clientHeight;
+                
+                if ((isAtTop && e.touches[0].clientY > startY) || 
+                    (isAtBottom && e.touches[0].clientY < startY)) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Remover el evento touchmove anterior del modal
+            pickupModal.removeEventListener('touchmove', null);
 
             // Handle orientation changes
             window.addEventListener('orientationchange', () => {
