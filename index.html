@@ -142,6 +142,12 @@
             transform: translateY(-2px);
         }
 
+        .btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-success {
             background-color: var(--success-color);
         }
@@ -416,6 +422,42 @@
             display: flex;
             gap: 15px;
             margin-top: 15px;
+        }
+
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .processing-spinner {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Modificar los estilos del modal para móviles */
@@ -757,7 +799,7 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="btn">Registrar Material</button>
+                <button type="submit" class="btn" id="submitBtn">Registrar Material</button>
             </form>
         </section>
 
@@ -840,7 +882,7 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button type="submit" class="btn btn-success">Confirmar Retiro</button>
+                        <button type="submit" class="btn btn-success" id="pickupSubmitBtn">Confirmar Retiro</button>
                         <button type="button" id="cancelPickup" class="btn btn-danger">Cancelar</button>
                     </div>
                 </form>
@@ -857,6 +899,14 @@
                     <button class="btn" id="prevImage">Anterior</button>
                     <button class="btn" id="nextImage">Siguiente</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Processing Overlay -->
+        <div class="processing-overlay" id="processingOverlay">
+            <div class="processing-spinner">
+                <div class="spinner"></div>
+                <p>Procesando registro...</p>
             </div>
         </div>
     </div>
@@ -894,6 +944,9 @@
         // For image viewer modal
         let currentImages = [];
         let currentImageIndex = 0;
+        
+        // Flag to prevent duplicate submissions
+        let isProcessing = false;
         
         // Supabase database functions
         
@@ -1285,6 +1338,16 @@
             return new Date(date).toLocaleString();
         }
         
+        // Show processing overlay
+        function showProcessingOverlay() {
+            document.getElementById('processingOverlay').style.display = 'flex';
+        }
+        
+        // Hide processing overlay
+        function hideProcessingOverlay() {
+            document.getElementById('processingOverlay').style.display = 'none';
+        }
+        
         // UI Functions
         function showSection(sectionId) {
             console.log('Switching to section:', sectionId);
@@ -1478,6 +1541,10 @@
             
             // Stop pickup camera if running
             stopPickupCamera();
+            
+            // Re-enable submit button
+            document.getElementById('pickupSubmitBtn').disabled = false;
+            document.getElementById('pickupSubmitBtn').textContent = 'Confirmar Retiro';
         }
         
         // Initialize the application
@@ -1501,6 +1568,21 @@
                 document.getElementById('materialForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     
+                    // Prevent duplicate submissions
+                    if (isProcessing) {
+                        console.log('Form submission already in progress, ignoring duplicate click');
+                        return;
+                    }
+                    
+                    // Set processing flag and disable button
+                    isProcessing = true;
+                    const submitBtn = document.getElementById('submitBtn');
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Registrando...';
+                    
+                    // Show processing overlay
+                    showProcessingOverlay();
+                    
                     const materialName = document.getElementById('materialName').value;
                     const materialDepartment = document.getElementById('materialDepartment').value;
                     const materialQuantity = parseInt(document.getElementById('materialQuantity').value);
@@ -1508,6 +1590,12 @@
                     
                     if (arrivalPhotosData.length === 0) {
                         alert('Por favor capture al menos una foto de llegada');
+                        
+                        // Reset processing state
+                        isProcessing = false;
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Registrar Material';
+                        hideProcessingOverlay();
                         return;
                     }
                     
@@ -1550,6 +1638,12 @@
                     } catch (error) {
                         console.error('Error registering material:', error);
                         alert('Error registering material. Please try again.');
+                    } finally {
+                        // Reset processing state regardless of success or failure
+                        isProcessing = false;
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Registrar Material';
+                        hideProcessingOverlay();
                     }
                 });
                 
@@ -1567,11 +1661,28 @@
                 document.getElementById('pickupForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     
+                    // Prevent duplicate submissions
+                    if (isProcessing) {
+                        console.log('Pickup form submission already in progress, ignoring duplicate click');
+                        return;
+                    }
+                    
+                    // Set processing flag and disable button
+                    isProcessing = true;
+                    const pickupSubmitBtn = document.getElementById('pickupSubmitBtn');
+                    pickupSubmitBtn.disabled = true;
+                    pickupSubmitBtn.textContent = 'Procesando...';
+                    
                     const materialId = parseInt(document.getElementById('pickupMaterialId').value);
                     const pickedUpBy = document.getElementById('pickedUpBy').value;
                     
                     if (pickupPhotosData.length === 0) {
                         alert('Por favor capture al menos una foto de retiro');
+                        
+                        // Reset processing state
+                        isProcessing = false;
+                        pickupSubmitBtn.disabled = false;
+                        pickupSubmitBtn.textContent = 'Confirmar Retiro';
                         return;
                     }
                     
@@ -1597,6 +1708,9 @@
                     } catch (error) {
                         console.error('Error recording pickup:', error);
                         alert('Error recording pickup. Please try again.');
+                    } finally {
+                        // Reset processing state
+                        isProcessing = false;
                     }
                 });
                 
