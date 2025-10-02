@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Material Register</title>
+    <title>Registro de Materiales de Almacén</title>
     <style>
         :root {
             --primary-color: #3498db;
@@ -692,28 +692,28 @@
 <body>
     <div class="container">
         <header>
-            <h1>Warehouse Material Register System</h1>
-            <p>Track materials from arrival to pickup with photo documentation</p>
+            <h1>Sistema de Registro de Materiales de Almacén</h1>
+            <p>Rastrea materiales desde su llegada hasta su retiro con documentación fotográfica</p>
             <nav>
-                <button class="nav-btn active" data-section="register">Register Material</button>
-                <button class="nav-btn" data-section="materials">Materials List</button>
-                <button class="nav-btn" data-section="history">Material History</button>
+                <button class="nav-btn active" data-section="register">Registrar Material</button>
+                <button class="nav-btn" data-section="materials">Lista de Materiales</button>
+                <button class="nav-btn" data-section="history">Historial</button>
             </nav>
         </header>
 
         <!-- Register Material Section -->
         <section id="register" class="section active">
-            <h2>Register New Material</h2>
+            <h2>Registrar Nuevo Material</h2>
             <form id="materialForm">
                 <div class="form-group">
-                    <label for="materialName">Material Name</label>
+                    <label for="materialName">Nombre del Material</label>
                     <input type="text" id="materialName" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="materialDepartment">Department</label>
+                    <label for="materialDepartment">Departamento</label>
                     <select id="materialDepartment" required>
-                        <option value="">Select Department</option>
+                        <option value="">Seleccionar Departamento</option>
                         <option value="IT">IT</option>
                         <option value="Mantenimiento">Mantenimiento</option>
                         <option value="Facilites">Facilites</option>
@@ -729,26 +729,26 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="materialQuantity">Quantity</label>
+                    <label for="materialQuantity">Cantidad</label>
                     <input type="number" id="materialQuantity" min="1" value="1" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="uploadedBy">Uploaded By</label>
+                    <label for="uploadedBy">Registrado Por</label>
                     <input type="text" id="uploadedBy" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Arrival Photos</label>
+                    <label>Fotos de Llegada</label>
                     <div class="photo-container">
                         <div class="camera-preview" id="arrivalCameraPreview">
-                            <span>Camera preview will appear here</span>
+                            <span>La vista previa de la cámara aparecerá aquí</span>
                             <video id="arrivalVideo" class="captured-photo" autoplay playsinline></video>
                         </div>
                         <div class="camera-controls">
-                            <button type="button" class="btn" id="startArrivalCamera">Start Camera</button>
-                            <button type="button" class="btn btn-success" id="captureArrivalPhoto" disabled>Capture Photo</button>
-                            <button type="button" class="btn btn-warning" id="stopArrivalCamera" disabled>Stop Camera</button>
+                            <button type="button" class="btn" id="startArrivalCamera">Iniciar Cámara</button>
+                            <button type="button" class="btn btn-success" id="captureArrivalPhoto" disabled>Capturar Foto</button>
+                            <button type="button" class="btn btn-warning" id="stopArrivalCamera" disabled>Detener Cámara</button>
                         </div>
                         <div class="captured-photos-container" id="arrivalPhotosContainer">
                             <!-- Captured photos will appear here -->
@@ -756,23 +756,28 @@
                     </div>
                 </div>
                 
-                <button type="submit" class="btn">Register Material</button>
+                <button type="submit" class="btn">Registrar Material</button>
             </form>
         </section>
 
         <!-- Materials List Section -->
         <section id="materials" class="section">
-            <h2>Materials List</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Lista de Materiales</h2>
+                <button class="btn btn-primary" id="reloadMaterials" style="margin: 0;">
+                    Actualizar Lista
+                </button>
+            </div>
             <div id="materialsTableContainer">
                 <table id="materialsTable">
                     <thead>
                         <tr>
-                            <th>Photo</th>
-                            <th>Name</th>
-                            <th>Department</th>
-                            <th>Quantity</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Foto</th>
+                            <th>Nombre</th>
+                            <th>Departamento</th>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="materialsTableBody">
@@ -781,24 +786,24 @@
                 </table>
                 <div id="emptyMaterials" class="empty-state">
                     <i>📦</i>
-                    <p>No materials registered yet</p>
+                    <p>No hay materiales registrados</p>
                 </div>
             </div>
         </section>
 
         <!-- Material History Section -->
         <section id="history" class="section">
-            <h2>Material History</h2>
+            <h2>Historial de Materiales</h2>
             <div class="form-group">
-                <label for="historyMaterialSelect">Select Material</label>
+                <label for="historyMaterialSelect">Seleccionar Material</label>
                 <select id="historyMaterialSelect">
-                    <option value="">Select a material to view history</option>
+                    <option value="">Seleccione un material para ver su historial</option>
                 </select>
             </div>
             <div id="historyContainer">
                 <div id="emptyHistory" class="empty-state">
                     <i>📋</i>
-                    <p>Select a material to view its history</p>
+                    <p>Seleccione un material para ver su historial</p>
                 </div>
                 <div id="historyList">
                     <!-- History will be populated here -->
@@ -809,24 +814,24 @@
         <!-- Pickup Modal -->
         <div id="pickupModal" class="modal">
             <div style="background-color: white; margin: 10% auto; padding: 20px; border-radius: var(--border-radius); width: 90%; max-width: 500px;">
-                <h2>Pickup Material</h2>
+                <h2>Retirar Material</h2>
                 <form id="pickupForm">
                     <input type="hidden" id="pickupMaterialId">
                     <div class="form-group">
-                        <label for="pickedUpBy">Picked Up By</label>
+                        <label for="pickedUpBy">Retirado Por</label>
                         <input type="text" id="pickedUpBy" required>
                     </div>
                     <div class="form-group">
-                        <label>Pickup Photos</label>
+                        <label>Fotos de Retiro</label>
                         <div class="photo-container">
                             <div class="camera-preview" id="pickupCameraPreview">
-                                <span>Camera preview will appear here</span>
+                                <span>La vista previa de la cámara aparecerá aquí</span>
                                 <video id="pickupVideo" class="captured-photo" autoplay playsinline></video>
                             </div>
                             <div class="camera-controls">
-                                <button type="button" class="btn" id="startPickupCamera">Start Camera</button>
-                                <button type="button" class="btn btn-success" id="capturePickupPhoto" disabled>Capture Photo</button>
-                                <button type="button" class="btn btn-warning" id="stopPickupCamera" disabled>Stop Camera</button>
+                                <button type="button" class="btn" id="startPickupCamera">Iniciar Cámara</button>
+                                <button type="button" class="btn btn-success" id="capturePickupPhoto" disabled>Capturar Foto</button>
+                                <button type="button" class="btn btn-warning" id="stopPickupCamera" disabled>Detener Cámara</button>
                             </div>
                             <div class="captured-photos-container" id="pickupPhotosContainer">
                                 <!-- Captured photos will appear here -->
@@ -834,8 +839,8 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button type="submit" class="btn btn-success">Confirm Pickup</button>
-                        <button type="button" id="cancelPickup" class="btn btn-danger">Cancel</button>
+                        <button type="submit" class="btn btn-success">Confirmar Retiro</button>
+                        <button type="button" id="cancelPickup" class="btn btn-danger">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -845,11 +850,11 @@
         <div id="imageViewerModal" class="modal">
             <span class="modal-close" id="imageViewerClose">&times;</span>
             <div class="modal-content">
-                <img id="modalImage" class="modal-img" alt="Enlarged view">
+                <img id="modalImage" class="modal-img" alt="Vista ampliada">
                 <div class="modal-counter" id="imageCounter"></div>
                 <div class="modal-nav">
-                    <button class="btn" id="prevImage">Previous</button>
-                    <button class="btn" id="nextImage">Next</button>
+                    <button class="btn" id="prevImage">Anterior</button>
+                    <button class="btn" id="nextImage">Siguiente</button>
                 </div>
             </div>
         </div>
@@ -1031,7 +1036,7 @@
                     console.log('Arrival camera started with basic constraints');
                 } catch (fallbackError) {
                     console.error('Fallback camera access failed:', fallbackError);
-                    alert('Error accessing camera. Please make sure you have granted camera permissions and are using a secure connection (HTTPS).');
+                    alert('Error accessing camera. Por favor asegúrese de haber otorgado los permisos y estar usando una conexión segura (HTTPS).');
                 }
             }
         }
@@ -1144,475 +1149,7 @@
                     console.log('Pickup camera started with basic constraints');
                 } catch (fallbackError) {
                     console.error('Fallback camera access failed:', fallbackError);
-                    alert('Error accessing camera. Please make sure you have granted camera permissions and are using a secure connection (HTTPS).');
-                }
-            }
-        }
-        
-        // Stop pickup camera
-        function stopPickupCamera() {
-            if (pickupStream) {
-                pickupStream.getTracks().forEach(track => track.stop());
-                pickupStream = null;
-                
-                // Hide video and show placeholder
-                const video = document.getElementById('pickupVideo');
-                video.style.display = 'none';
-                video.srcObject = null;
-                
-                const preview = document.getElementById('pickupCameraPreview');
-                const placeholder = preview.querySelector('span');
-                if (placeholder) placeholder.style.display = 'block';
-                
-                // Disable capture and stop buttons
-                document.getElementById('capturePickupPhoto').disabled = true;
-                document.getElementById('stopPickupCamera').disabled = true;
-                
-                console.log('Pickup camera stopped');
-            }
-        }
-        
-        // Capture pickup photo
-        function capturePickupPhoto() {
-            const video = document.getElementById('pickupVideo');
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            
-            // Set canvas dimensions to match video
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            // Draw video frame to canvas
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Convert canvas to data URL
-            const photoData = canvas.toDataURL('image/jpeg');
-            
-            // Add to photos array
-            pickupPhotosData.push(photoData);
-            
-            // Display captured photo in the container
-            displayCapturedPhoto(photoData, 'pickupPhotosContainer', 'pickup');
-            
-            console.log('Pickup photo captured');
-        }
-        
-        // Display captured photo in the container
-        function displayCapturedPhoto(photoData, containerId, type) {
-            const container = document.getElementById(containerId);
-            
-            const photoItem = document.createElement('div');
-            photoItem.className = 'captured-photo-item';
-            
-            const img = document.createElement('img');
-            img.src = photoData;
-            img.alt = 'Captured photo';
-            
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-photo';
-            removeBtn.innerHTML = '×';
-            removeBtn.onclick = function(e) {
-                e.stopPropagation();
-                removePhoto(photoData, containerId, type);
-                photoItem.remove();
-            };
-            
-            img.onclick = function() {
-                openImageViewer([photoData], 0);
-            };
-            
-            photoItem.appendChild(img);
-            photoItem.appendChild(removeBtn);
-            container.appendChild(photoItem);
-        }
-        
-        // Remove photo from array
-        function removePhoto(photoData, containerId, type) {
-            if (type === 'arrival') {
-                arrivalPhotosData = arrivalPhotosData.filter(photo => photo !== photoData);
-            } else if (type === 'pickup') {
-                pickupPhotosData = pickupPhotosData.filter(photo => photo !== photoData);
-            }
-        }
-        
-        // Open image viewer modal
-        function openImageViewer(images, index) {
-            currentImages = images;
-            currentImageIndex = index;
-            
-            const modal = document.getElementById('imageViewerModal');
-            const modalImage = document.getElementById('modalImage');
-            const imageCounter = document.getElementById('imageCounter');
-            
-            modalImage.src = currentImages[currentImageIndex];
-            imageCounter.textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
-            
-            modal.style.display = 'block';
-        }
-        
-        // Close image viewer modal
-        function closeImageViewer() {
-            const modal = document.getElementById('imageViewerModal');
-            modal.style.display = 'none';
-        }
-        
-        // Navigate to previous image
-        function prevImage() {
-            if (currentImages.length > 1) {
-                currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
-                document.getElementById('modalImage').src = currentImages[currentImageIndex];
-                document.getElementById('imageCounter').textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
-            }
-        }
-        
-        // Navigate to next image
-        function nextImage() {
-            if (currentImages.length > 1) {
-                currentImageIndex = (currentImageIndex + 1) % currentImages.length;
-                document.getElementById('modalImage').src = currentImages[currentImageIndex];
-                document.getElementById('imageCounter').textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
-            }
-        }
-        
-        // Format date for display
-        function formatDate(date) {
-            return new Date(date).toLocaleString();
-        }
-        
-        // UI Functions
-        function showSection(sectionId) {
-            console.log('Switching to section:', sectionId);
-            
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            } else {
-                console.error('Section not found:', sectionId);
-                return;
-            }
-            
-            // Update active nav button
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            const activeButton = document.querySelector(`[data-section="${sectionId}"]`);
-            if (activeButton) {
-                activeButton.classList.add('active');
-            }
-            
-            // Refresh data if needed
-            if (sectionId === 'materials') {
-                loadMaterialsTable();
-            } else if (sectionId === 'history') {
-                loadMaterialsForHistory();
-            }
-        }
-        
-        // Load materials into the table
-        async function loadMaterialsTable() {
-            try {
-                const materials = await getAllMaterials();
-                const tableBody = document.getElementById('materialsTableBody');
-                const emptyState = document.getElementById('emptyMaterials');
-                
-                tableBody.innerHTML = '';
-                
-                if (materials.length === 0) {
-                    emptyState.style.display = 'block';
-                    return;
-                }
-                
-                emptyState.style.display = 'none';
-                
-                materials.forEach(material => {
-                    const row = document.createElement('tr');
-                    
-                    // Use the first photo as thumbnail
-                    const firstPhoto = material.arrival_photos && material.arrival_photos.length > 0 
-                        ? material.arrival_photos[0] 
-                        : '';
-                    
-                    row.innerHTML = `
-                        <td>
-                            ${firstPhoto ? 
-                                `<img src="${firstPhoto}" class="material-img" alt="${material.name}" 
-                                      onclick="openImageViewer(${JSON.stringify(material.arrival_photos).replace(/"/g, '&quot;')}, 0)">` : 
-                                'No Photo'
-                            }
-                        </td>
-                        <td>${material.name}</td>
-                        <td>${material.department}</td>
-                        <td>${material.quantity}</td>
-                        <td class="${material.status === 'available' ? 'status-available' : 'status-taken'}">${material.status}</td>
-                        <td>
-                            ${material.status === 'available' ? 
-                                `<button class="btn btn-success" onclick="openPickupModal(${material.id})">Pickup</button>` : 
-                                'Already Taken'
-                            }
-                        </td>
-                    `;
-                    
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error loading materials table:', error);
-                alert('Error loading materials. Please try again.');
-            }
-        }
-        
-        // Load materials for history dropdown
-        async function loadMaterialsForHistory() {
-            try {
-                const materials = await getAllMaterials();
-                const select = document.getElementById('historyMaterialSelect');
-                
-                // Clear existing options except the first one
-                while (select.children.length > 1) {
-                    select.removeChild(select.lastChild);
-                }
-                
-                materials.forEach(material => {
-                    const option = document.createElement('option');
-                    option.value = material.id;
-                    option.textContent = material.name;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error loading materials for history:', error);
-                alert('Error loading materials. Please try again.');
-            }
-        }
-        
-        // Load material history
-        async function loadMaterialHistory(materialId) {
-            try {
-                const history = await getMaterialHistory(materialId);
-                const historyList = document.getElementById('historyList');
-                const emptyState = document.getElementById('emptyHistory');
-                
-                historyList.innerHTML = '';
-                
-                if (history.length === 0) {
-                    emptyState.style.display = 'block';
-                    return;
-                }
-                
-                emptyState.style.display = 'none';
-                
-                history.forEach(record => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'history-item';
-                    
-                    historyItem.innerHTML = `
-                        <div class="history-header">
-                            <span class="history-date">${formatDate(record.date)}</span>
-                            <span class="history-type ${record.type}">${record.type.toUpperCase()}</span>
-                        </div>
-                        <div>
-                            <p><strong>By:</strong> ${record.by}</p>
-                            ${record.notes ? `<p><strong>Notes:</strong> ${record.notes}</p>` : ''}
-                        </div>
-                        ${record.photos && record.photos.length > 0 ? `
-                            <div class="history-photos">
-                                ${record.photos.map((photo, index) => 
-                                    `<img src="${photo}" class="history-photo" alt="History photo" 
-                                          onclick="openImageViewer(${JSON.stringify(record.photos).replace(/"/g, '&quot;')}, ${index})">`
-                                ).join('')}
-                            </div>
-                        ` : ''}
-                    `;
-                    
-                    historyList.appendChild(historyItem);
-                });
-            } catch (error) {
-                console.error('Error loading material history:', error);
-                alert('Error loading material history. Please try again.');
-            }
-        }
-        
-        // Camera functions
-        
-        // Start camera for arrival photo
-        async function startArrivalCamera() {
-            try {
-                console.log('Starting arrival camera...');
-                
-                // Stop any existing stream
-                if (arrivalStream) {
-                    arrivalStream.getTracks().forEach(track => track.stop());
-                }
-                
-                // Request camera access with specific constraints
-                const constraints = {
-                    video: { 
-                        facingMode: 'environment', // Prefer rear camera
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    }, 
-                    audio: false 
-                };
-                
-                arrivalStream = await navigator.mediaDevices.getUserMedia(constraints);
-                
-                // Display camera stream in preview
-                const video = document.getElementById('arrivalVideo');
-                video.srcObject = arrivalStream;
-                video.style.display = 'block';
-                
-                // Clear placeholder text
-                const preview = document.getElementById('arrivalCameraPreview');
-                const placeholder = preview.querySelector('span');
-                if (placeholder) placeholder.style.display = 'none';
-                
-                // Enable capture and stop buttons
-                document.getElementById('captureArrivalPhoto').disabled = false;
-                document.getElementById('stopArrivalCamera').disabled = false;
-                
-                console.log('Arrival camera started successfully');
-                
-            } catch (error) {
-                console.error('Error accessing camera:', error);
-                
-                // Try again with less specific constraints
-                try {
-                    console.log('Trying with basic constraints...');
-                    arrivalStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                    
-                    const video = document.getElementById('arrivalVideo');
-                    video.srcObject = arrivalStream;
-                    video.style.display = 'block';
-                    
-                    const preview = document.getElementById('arrivalCameraPreview');
-                    const placeholder = preview.querySelector('span');
-                    if (placeholder) placeholder.style.display = 'none';
-                    
-                    document.getElementById('captureArrivalPhoto').disabled = false;
-                    document.getElementById('stopArrivalCamera').disabled = false;
-                    
-                    console.log('Arrival camera started with basic constraints');
-                } catch (fallbackError) {
-                    console.error('Fallback camera access failed:', fallbackError);
-                    alert('Error accessing camera. Please make sure you have granted camera permissions and are using a secure connection (HTTPS).');
-                }
-            }
-        }
-        
-        // Stop arrival camera
-        function stopArrivalCamera() {
-            if (arrivalStream) {
-                arrivalStream.getTracks().forEach(track => track.stop());
-                arrivalStream = null;
-                
-                // Hide video and show placeholder
-                const video = document.getElementById('arrivalVideo');
-                video.style.display = 'none';
-                video.srcObject = null;
-                
-                const preview = document.getElementById('arrivalCameraPreview');
-                const placeholder = preview.querySelector('span');
-                if (placeholder) placeholder.style.display = 'block';
-                
-                // Disable capture and stop buttons
-                document.getElementById('captureArrivalPhoto').disabled = true;
-                document.getElementById('stopArrivalCamera').disabled = true;
-                
-                console.log('Arrival camera stopped');
-            }
-        }
-        
-        // Capture arrival photo
-        function captureArrivalPhoto() {
-            const video = document.getElementById('arrivalVideo');
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            
-            // Set canvas dimensions to match video
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            // Draw video frame to canvas
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Convert canvas to data URL
-            const photoData = canvas.toDataURL('image/jpeg');
-            
-            // Add to photos array
-            arrivalPhotosData.push(photoData);
-            
-            // Display captured photo in the container
-            displayCapturedPhoto(photoData, 'arrivalPhotosContainer', 'arrival');
-            
-            console.log('Arrival photo captured');
-        }
-        
-        // Start camera for pickup photo
-        async function startPickupCamera() {
-            try {
-                console.log('Starting pickup camera...');
-                
-                // Stop any existing stream
-                if (pickupStream) {
-                    pickupStream.getTracks().forEach(track => track.stop());
-                }
-                
-                // Request camera access with specific constraints
-                const constraints = {
-                    video: { 
-                        facingMode: 'environment', // Prefer rear camera
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    }, 
-                    audio: false 
-                };
-                
-                pickupStream = await navigator.mediaDevices.getUserMedia(constraints);
-                
-                // Display camera stream in preview
-                const video = document.getElementById('pickupVideo');
-                video.srcObject = pickupStream;
-                video.style.display = 'block';
-                
-                // Clear placeholder text
-                const preview = document.getElementById('pickupCameraPreview');
-                const placeholder = preview.querySelector('span');
-                if (placeholder) placeholder.style.display = 'none';
-                
-                // Enable capture and stop buttons
-                document.getElementById('capturePickupPhoto').disabled = false;
-                document.getElementById('stopPickupCamera').disabled = false;
-                
-                console.log('Pickup camera started successfully');
-                
-            } catch (error) {
-                console.error('Error accessing camera:', error);
-                
-                // Try again with less specific constraints
-                try {
-                    console.log('Trying with basic constraints...');
-                    pickupStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                    
-                    const video = document.getElementById('pickupVideo');
-                    video.srcObject = pickupStream;
-                    video.style.display = 'block';
-                    
-                    const preview = document.getElementById('pickupCameraPreview');
-                    const placeholder = preview.querySelector('span');
-                    if (placeholder) placeholder.style.display = 'none';
-                    
-                    document.getElementById('capturePickupPhoto').disabled = false;
-                    document.getElementById('stopPickupCamera').disabled = false;
-                    
-                    console.log('Pickup camera started with basic constraints');
-                } catch (fallbackError) {
-                    console.error('Fallback camera access failed:', fallbackError);
-                    alert('Error accessing camera. Please make sure you have granted camera permissions and are using a secure connection (HTTPS).');
+                    alert('Error accessing camera. Por favor asegúrese de haber otorgado los permisos y estar usando una conexión segura (HTTPS).');
                 }
             }
         }
@@ -1969,7 +1506,7 @@
                     const uploadedBy = document.getElementById('uploadedBy').value;
                     
                     if (arrivalPhotosData.length === 0) {
-                        alert('Please capture at least one arrival photo');
+                        alert('Por favor capture al menos una foto de llegada');
                         return;
                     }
                     
@@ -1995,7 +1532,7 @@
                             notes: `Material ${materialName} arrived for ${materialDepartment} department`
                         });
                         
-                        alert('Material registered successfully!');
+                        alert('Material registrado exitosamente!');
                         document.getElementById('materialForm').reset();
                         
                         // Reset arrival photos
@@ -2033,7 +1570,7 @@
                     const pickedUpBy = document.getElementById('pickedUpBy').value;
                     
                     if (pickupPhotosData.length === 0) {
-                        alert('Please capture at least one pickup photo');
+                        alert('Por favor capture al menos una foto de retiro');
                         return;
                     }
                     
@@ -2051,7 +1588,7 @@
                             notes: `Material picked up by ${pickedUpBy}`
                         });
                         
-                        alert('Material pickup recorded successfully!');
+                        alert('Material retirado exitosamente!');
                         closePickupModal();
                         
                         // Refresh materials table
@@ -2095,6 +1632,17 @@
                     }
                 });
                 
+                // Add reload button listener
+                document.getElementById('reloadMaterials').addEventListener('click', async () => {
+                    try {
+                        await loadMaterialsTable();
+                        alert('Lista de materiales actualizada exitosamente!');
+                    } catch (error) {
+                        console.error('Error reloading materials:', error);
+                        alert('Error al actualizar la lista de materiales. Por favor intente de nuevo.');
+                    }
+                });
+                
                 // Initialize mobile enhancements
                 initMobileEnhancements();
                 
@@ -2103,8 +1651,8 @@
                 loadMaterialsForHistory();
                 
             } catch (error) {
-                console.error('Error initializing application:', error);
-                alert('Error initializing application. Please refresh the page.');
+                console.error('Error iniciando la aplicación:', error);
+                alert('Error al iniciar la aplicación. Por favor recargue la página.');
             }
         });
         
