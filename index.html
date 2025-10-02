@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Material Register</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .section {
+            display: none;
+            padding: 30px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .photo-container {
+            border: 1px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .camera-preview {
+            width: 100%;
+            height: 300px;
+            background-color: #eee;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .captured-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .captured-photos-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .captured-photo-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .captured-photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .captured-photo-item img:hover {
+            transform: scale(1.05);
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .material-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .material-img:hover {
+            transform: scale(1.1);
+        }
+
+        .status-available {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .status-taken {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .history-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-date {
+            color: #6c757d;
+        }
+
+        .history-type {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .history-type.arrival {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary-color);
+        }
+
+        .history-type.pickup {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success-color);
+        }
+
+        .history-photos {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .history-photo {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .history-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .modal-counter {
+            color: white;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+
+        .modal-nav {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+            
+            .camera-controls {
+                flex-direction: column;
+            }
+            
+            .captured-photos-container {
+                justify-content: center;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Warehouse Material Register System</h1>
+            <p>Track materials from arrival to pickup with photo documentation</p>
+            <nav>
+                <button class="nav-btn active" data-section="register">Register Material</button>
+                <button class="nav-btn" data-section="materials">Materials List</button>
+                <button class="nav-btn" data-section="history">Material History</button>
+            </nav>
+        </header>
+
+        <!-- Register Material Section -->
+        <section id="register" class="section active">
+            <h2>Register New Material</h2>
+            <form id="materialForm">
+                <div class="form-group">
+                    <label for="materialName">Material Name</label>
+                    <input type="text" id="materialName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="materialDepartment">Department</label>
+                    <select id="materialDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="IT">IT</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Facilites">Facilites</option>
+                        <option value="Consumibles">Consumibles</option>
+                        <option value="Oakley">Oakley</option>
+                        <option value="DC">DC</option>
+                        <option value="Enfermería">Enfermería</option>
+                        <option value="RRHH">RRHH</option>
+                        <option value="EHS">EHS</option>
+                        <option value="RX">RX</option>
+                        <option value="LAB">LAB</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="materialQuantity">Quantity</label>
+                    <input type="number" id="materialQuantity" min="1" value="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadedBy">Uploaded By</label>
+                    <input type="text" id="uploadedBy" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Arrival Photos</label>
+                    <div class="photo-container">
+                        <div class="camera-preview" id="arrivalCameraPreview">
+                            <span>Camera preview will appear here</span>
+                            <video id="arrivalVideo" class="captured-photo" autoplay playsinline></video>
+                        </div>
+                        <div class="camera-controls">
+                            <button type="button" class="btn" id="startArrivalCamera">Start Camera</button>
+                            <button type="button" class="btn btn-success" id="captureArrivalPhoto" disabled>Capture Photo</button>
+                            <button type="button" class="btn btn-warning" id="stopArrivalCamera" disabled>Stop Camera</button>
+                        </div>
+                        <div class="captured-photos-container" id="arrivalPhotosContainer">
+                            <!-- Captured photos will appear here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">Register Material</button>
+            </form>
+        </section>
+
+        <!-- Materials List Section -->
+        <section id="materials" class="section">
+            <h2>Materials List</h2>
+            <div id="materialsTableContainer">
+                <table id="materialsTable">
+                    <thead>
+                        <tr>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materialsTableBody">
+                        <!-- Materials will be populated here -->
+                    </tbody>
+                </table>
+                <div id="emptyMaterials" class="empty-state">
+                    <i>📦</i>
+                    <p>No materials registered yet</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Material History Section -->
+        <section id="history" class="section">
+            <h2>Material History</h2>
+            <div class="form-group">
+                <label for="historyMaterialSelect">Select Material</label>
+                <select id="historyMaterialSelect">
+                    <option value="">Select a material to view history</option>
+                </select>
+            </div>
+            <div id="historyContainer">
+                <div id="emptyHistory" class="empty-state">
+                    <i>📋</i>
+                    <p>Select a material to view its history</p>
+                </div>
+                <div id="historyList">
+                    <!-- History will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Pickup Modal -->
+        <div id="pickupModal" class="modal">
+            <div style="background-color: white; margin: 10% auto; padding: 20px; border-radius: var(--border-radius); width: 90%; max-width: 500px;">
+                <h2>Pickup Material</h2>
+                <form id="pickupForm">
+                    <input type="hidden" id="pickupMaterialId">
+                    <div class="form-group">
+                        <label for="pickedUpBy">Picked Up By</label>
+                        <input type="text" id="pickedUpBy" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pickup Photos</label>
+                        <div class="photo-container">
+                            <div class="camera-preview" id="pickupCameraPreview">
+                                <span>Camera preview will appear here</span>
+                                <video id="pickupVideo" class="captured-photo" autoplay playsinline></video>
+                            </div>
+                            <div class="camera-controls">
+                                <button type="button" class="btn" id="startPickupCamera">Start Camera</button>
+                                <button type="button" class="btn btn-success" id="capturePickupPhoto" disabled>Capture Photo</button>
+                                <button type="button" class="btn btn-warning" id="stopPickupCamera" disabled>Stop Camera</button>
+                            </div>
+                            <div class="captured-photos-container" id="pickupPhotosContainer">
+                                <!-- Captured photos will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn btn-success">Confirm Pickup</button>
+                        <button type="button" id="cancelPickup" class="btn btn-danger">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Image Viewer Modal -->
+        <div id="imageViewerModal" class="modal">
+            <span class="modal-close" id="imageViewerClose">&times;</span>
+            <div class="modal-content">
+                <img id="modalImage" class="modal-img" alt="Enlarged view">
+                <div class="modal-counter" id="imageCounter"></div>
+                <div class="modal-nav">
+                    <button class="btn" id="prevImage">Previous</button>
+                    <button class="btn" id="nextImage">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Supabase client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://sdsuokxtudyyfrijzhia.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkc3Vva3h0dWR5eWZyaWp6aGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MTAzNTYsImV4cCI6MjA3NDk4NjM1Nn0.jcL8x6_t5bGLeUg21mWwfcgIHctXJJmLsMPFQuKopbs';
+        
+        // Get createClient from the global object
+        const supabaseClient = window.supabase.createClient;
+        const supabase = supabaseClient(supabaseUrl, supabaseKey);
+
+        // Add this function to verify the connection
+        async function initDB() {
+            try {
+                const { data, error } = await supabase.from('materials').select('count');
+                if (error) throw error;
+                console.log('Connected to Supabase successfully');
+            } catch (error) {
+                console.error('Supabase connection error:', error);
+                throw error;
+            }
+        }
+
+        // Camera streams and photo data
+        let arrivalStream = null;
+        let pickupStream = null;
+        let arrivalPhotosData = [];
+        let pickupPhotosData = [];
+        
+        // For image viewer modal
+        let currentImages = [];
+        let currentImageIndex = 0;
+        
+        // Supabase database functions
+        
+        // Add material to database
+        async function addMaterial(material) {
+            try {
+                const { data, error } = await supabase
+                    .from('materials')
+                    .insert([material])
+                    .select();
+                
+                if (error) throw error;
+                return data[0].id;
+            } catch (error) {
+                console.error('Error adding material:', error);
+                throw error;
+            }
+        }
+        
+        // Get all materials from database
+        async function getAllMaterials() {
+            const { data, error } = await supabase
+                .from('materials')
+                .select('*')
+                .order('created_at', { ascending: false });
+                
+            if (error) {
+                console.error('Error fetching materials:', error);
+                throw error;
+            }
+            
+            return data;
+        }
+        
+        // Update material in database
+        async function updateMaterial(id, updates) {
+            const { data, error } = await supabase
+                .from('materials')
+                .update(updates)
+                .eq('id', id)
+                .select();
+                
+            if (error) {
+                console.error('Error updating material:', error);
+                throw error;
+            }
+            
+            return data;
+        }
+        
+        // Add history record
+        async function addHistoryRecord(record) {
+            const { data, error } = await supabase
+                .from('history')
+                .insert([record])
+                .select();
+                
+            if (error) {
+                console.error('Error adding history record:', error);
+                throw error;
+            }
+            
+            return data;
+        }
+        
+        // Get history for a material
+        async function getMaterialHistory(materialId) {
+            const { data, error } = await supabase
+                .from('history')
+                .select('*')
+                .eq('material_id', materialId)
+                .order('date', { ascending: false });
+                
+            if (error) {
+                console.error('Error fetching material history:', error);
+                throw error;
+            }
+            
+            return data;
+        }
+        
+        // Camera functions
+        
+        // Start camera for arrival photo
+        async function startArrivalCamera() {
+            try {
+                console.log('Starting arrival camera...');
+                
+                // Stop any existing stream
+                if (arrivalStream) {
+                    arrivalStream.getTracks().forEach(track => track.stop());
+                }
+                
+                // Request camera access with specific constraints
+                const constraints = {
+                    video: { 
+                        facingMode: 'environment', // Prefer rear camera
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }, 
+                    audio: false 
+                };
+                
+                arrivalStream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                // Display camera stream in preview
+                const video = document.getElementById('arrivalVideo');
+                video.srcObject = arrivalStream;
+                video.style.display = 'block';
+                
+                // Clear placeholder text
+                const preview = document.getElementById('arrivalCameraPreview');
+                const placeholder = preview.querySelector('span');
+                if (placeholder) placeholder.style.display = 'none';
+                
+                // Enable capture and stop buttons
+                document.getElementById('captureArrivalPhoto').disabled = false;
+                document.getElementById('stopArrivalCamera').disabled = false;
+                
+                console.log('Arrival camera started successfully');
+                
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                
+                // Try again with less specific constraints
+                try {
+                    console.log('Trying with basic constraints...');
+                    arrivalStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    
+                    const video = document.getElementById('arrivalVideo');
+                    video.srcObject = arrivalStream;
+                    video.style.display = 'block';
+                    
+                    const preview = document.getElementById('arrivalCameraPreview');
+                    const placeholder = preview.querySelector('span');
+                    if (placeholder) placeholder.style.display = 'none';
+                    
+                    document.getElementById('captureArrivalPhoto').disabled = false;
+                    document.getElementById('stopArrivalCamera').disabled = false;
+                    
+                    console.log('Arrival camera started with basic constraints');
+                } catch (fallbackError) {
+                    console.error('Fallback camera access failed:', fallbackError);
+                    alert('Error accessing camera. Please make sure you have granted camera permissions and are using a secure connection (HTTPS).');
+                }
+            }
+        }
+        
+        // Stop arrival camera
+        function stopArrivalCamera() {
+            if (arrivalStream) {
+                arrivalStream.getTracks().forEach(track => track.stop());
+                arrivalStream = null;
+                
+                // Hide video and show placeholder
+                const video = document.getElementById('arrivalVideo');
+                video.style.display = 'none';
+                video.srcObject = null;
+                
+                const preview = document.getElementById('arrivalCameraPreview');
+                const placeholder = preview.querySelector('span');
+                if (placeholder) placeholder.style.display = 'block';
+                
+                // Disable capture and stop buttons
+                document.getElementById('captureArrivalPhoto').disabled = true;
+                document.getElementById('stopArrivalCamera').disabled = true;
+                
+                console.log('Arrival camera stopped');
+            }
+        }
+        
+        // Capture arrival photo
+        function captureArrivalPhoto() {
+            const video = document.getElementById('arrivalVideo');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            // Set canvas dimensions to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw video frame to canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert canvas to data URL
+            const photoData = canvas.toDataURL('image/jpeg');
+            
+            // Add to photos array
+            arrivalPhotosData.push(photoData);
+            
+            // Display captured photo in the container
+            displayCapturedPhoto(photoData, 'arrivalPhotosContainer', 'arrival');
+            
+            console.log('Arrival photo captured');
+        }
+        
+        // Start camera for pickup photo
+        async function startPickupCamera() {
+            try {
+                console.log('Starting pickup camera...');
+                
+                // Stop any existing stream
+                if (pickupStream) {
+                    pickupStream.getTracks().forEach(track => track.stop());
+                }
+                
+                // Request camera access with specific constraints
+                const constraints = {
+                    video: { 
+                        facingMode: 'environment', // Prefer rear camera
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }, 
+                    audio: false 
+                };
+                
+                pickupStream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                // Display camera stream in preview
+                const video = document.getElementById('pickupVideo');
+                video.srcObject = pickupStream;
+                video.style.display = 'block';
+                
+                // Clear placeholder text
+                const preview = document.getElementById('pickupCameraPreview');
+                const placeholder = preview.querySelector('span');
+                if (placeholder) placeholder.style.display = 'none';
+                
+                // Enable capture and stop buttons
+                document.getElementById('capturePickupPhoto').disabled = false;
+                document.getElementById('stopPickupCamera').disabled = false;
+                
+                console.log('Pickup camera started successfully');
+                
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                
+                // Try again with less specific constraints
+                try {
+                    console.log('Trying with basic constraints...');
+                    pickupStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    
+                    const video = document.getElementById('pickupVideo');
+                    video.srcObject = pickupStream;
+                    video.style.display = 'block';
+                    
+                    const preview = document.getElementById('pickupCameraPreview');
+                    const placeholder = preview.querySelector('span');
+                    if (placeholder) placeholder.style.display = 'none';
+                    
+                    document.getElementById('capturePickupPhoto').disabled = false;
+                    document.getElementById('stopPickupCamera').disabled = false;
+                    
+                    console.log('Pickup camera started with basic constraints');
+                } catch (fallbackError) {
+                    console.error('Fallback camera access failed:', fallbackError);
+                    alert('Error accessing camera. Please make sure you have granted camera permissions and are using a secure connection (HTTPS).');
+                }
+            }
+        }
+        
+        // Stop pickup camera
+        function stopPickupCamera() {
+            if (pickupStream) {
+                pickupStream.getTracks().forEach(track => track.stop());
+                pickupStream = null;
+                
+                // Hide video and show placeholder
+                const video = document.getElementById('pickupVideo');
+                video.style.display = 'none';
+                video.srcObject = null;
+                
+                const preview = document.getElementById('pickupCameraPreview');
+                const placeholder = preview.querySelector('span');
+                if (placeholder) placeholder.style.display = 'block';
+                
+                // Disable capture and stop buttons
+                document.getElementById('capturePickupPhoto').disabled = true;
+                document.getElementById('stopPickupCamera').disabled = true;
+                
+                console.log('Pickup camera stopped');
+            }
+        }
+        
+        // Capture pickup photo
+        function capturePickupPhoto() {
+            const video = document.getElementById('pickupVideo');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            // Set canvas dimensions to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw video frame to canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert canvas to data URL
+            const photoData = canvas.toDataURL('image/jpeg');
+            
+            // Add to photos array
+            pickupPhotosData.push(photoData);
+            
+            // Display captured photo in the container
+            displayCapturedPhoto(photoData, 'pickupPhotosContainer', 'pickup');
+            
+            console.log('Pickup photo captured');
+        }
+        
+        // Display captured photo in the container
+        function displayCapturedPhoto(photoData, containerId, type) {
+            const container = document.getElementById(containerId);
+            
+            const photoItem = document.createElement('div');
+            photoItem.className = 'captured-photo-item';
+            
+            const img = document.createElement('img');
+            img.src = photoData;
+            img.alt = 'Captured photo';
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-photo';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function(e) {
+                e.stopPropagation();
+                removePhoto(photoData, containerId, type);
+                photoItem.remove();
+            };
+            
+            img.onclick = function() {
+                openImageViewer([photoData], 0);
+            };
+            
+            photoItem.appendChild(img);
+            photoItem.appendChild(removeBtn);
+            container.appendChild(photoItem);
+        }
+        
+        // Remove photo from array
+        function removePhoto(photoData, containerId, type) {
+            if (type === 'arrival') {
+                arrivalPhotosData = arrivalPhotosData.filter(photo => photo !== photoData);
+            } else if (type === 'pickup') {
+                pickupPhotosData = pickupPhotosData.filter(photo => photo !== photoData);
+            }
+        }
+        
+        // Open image viewer modal
+        function openImageViewer(images, index) {
+            currentImages = images;
+            currentImageIndex = index;
+            
+            const modal = document.getElementById('imageViewerModal');
+            const modalImage = document.getElementById('modalImage');
+            const imageCounter = document.getElementById('imageCounter');
+            
+            modalImage.src = currentImages[currentImageIndex];
+            imageCounter.textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+            
+            modal.style.display = 'block';
+        }
+        
+        // Close image viewer modal
+        function closeImageViewer() {
+            const modal = document.getElementById('imageViewerModal');
+            modal.style.display = 'none';
+        }
+        
+        // Navigate to previous image
+        function prevImage() {
+            if (currentImages.length > 1) {
+                currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
+                document.getElementById('modalImage').src = currentImages[currentImageIndex];
+                document.getElementById('imageCounter').textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+            }
+        }
+        
+        // Navigate to next image
+        function nextImage() {
+            if (currentImages.length > 1) {
+                currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+                document.getElementById('modalImage').src = currentImages[currentImageIndex];
+                document.getElementById('imageCounter').textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+            }
+        }
+        
+        // Format date for display
+        function formatDate(date) {
+            return new Date(date).toLocaleString();
+        }
+        
+        // UI Functions
+        function showSection(sectionId) {
+            console.log('Switching to section:', sectionId);
+            
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            } else {
+                console.error('Section not found:', sectionId);
+                return;
+            }
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const activeButton = document.querySelector(`[data-section="${sectionId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+            
+            // Refresh data if needed
+            if (sectionId === 'materials') {
+                loadMaterialsTable();
+            } else if (sectionId === 'history') {
+                loadMaterialsForHistory();
+            }
+        }
+        
+        // Load materials into the table
+        async function loadMaterialsTable() {
+            try {
+                const materials = await getAllMaterials();
+                const tableBody = document.getElementById('materialsTableBody');
+                const emptyState = document.getElementById('emptyMaterials');
+                
+                tableBody.innerHTML = '';
+                
+                if (materials.length === 0) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                
+                materials.forEach(material => {
+                    const row = document.createElement('tr');
+                    
+                    // Use the first photo as thumbnail
+                    const firstPhoto = material.arrival_photos && material.arrival_photos.length > 0 
+                        ? material.arrival_photos[0] 
+                        : '';
+                    
+                    row.innerHTML = `
+                        <td>
+                            ${firstPhoto ? 
+                                `<img src="${firstPhoto}" class="material-img" alt="${material.name}" 
+                                      onclick="openImageViewer(${JSON.stringify(material.arrival_photos).replace(/"/g, '&quot;')}, 0)">` : 
+                                'No Photo'
+                            }
+                        </td>
+                        <td>${material.name}</td>
+                        <td>${material.department}</td>
+                        <td>${material.quantity}</td>
+                        <td class="${material.status === 'available' ? 'status-available' : 'status-taken'}">${material.status}</td>
+                        <td>
+                            ${material.status === 'available' ? 
+                                `<button class="btn btn-success" onclick="openPickupModal(${material.id})">Pickup</button>` : 
+                                'Already Taken'
+                            }
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading materials table:', error);
+                alert('Error loading materials. Please try again.');
+            }
+        }
+        
+        // Load materials for history dropdown
+        async function loadMaterialsForHistory() {
+            try {
+                const materials = await getAllMaterials();
+                const select = document.getElementById('historyMaterialSelect');
+                
+                // Clear existing options except the first one
+                while (select.children.length > 1) {
+                    select.removeChild(select.lastChild);
+                }
+                
+                materials.forEach(material => {
+                    const option = document.createElement('option');
+                    option.value = material.id;
+                    option.textContent = material.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading materials for history:', error);
+                alert('Error loading materials. Please try again.');
+            }
+        }
+        
+        // Load material history
+        async function loadMaterialHistory(materialId) {
+            try {
+                const history = await getMaterialHistory(materialId);
+                const historyList = document.getElementById('historyList');
+                const emptyState = document.getElementById('emptyHistory');
+                
+                historyList.innerHTML = '';
+                
+                if (history.length === 0) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                emptyState.style.display = 'none';
+                
+                history.forEach(record => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    historyItem.innerHTML = `
+                        <div class="history-header">
+                            <span class="history-date">${formatDate(record.date)}</span>
+                            <span class="history-type ${record.type}">${record.type.toUpperCase()}</span>
+                        </div>
+                        <div>
+                            <p><strong>By:</strong> ${record.by}</p>
+                            ${record.notes ? `<p><strong>Notes:</strong> ${record.notes}</p>` : ''}
+                        </div>
+                        ${record.photos && record.photos.length > 0 ? `
+                            <div class="history-photos">
+                                ${record.photos.map((photo, index) => 
+                                    `<img src="${photo}" class="history-photo" alt="History photo" 
+                                          onclick="openImageViewer(${JSON.stringify(record.photos).replace(/"/g, '&quot;')}, ${index})">`
+                                ).join('')}
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    historyList.appendChild(historyItem);
+                });
+            } catch (error) {
+                console.error('Error loading material history:', error);
+                alert('Error loading material history. Please try again.');
+            }
+        }
+        
+        // Open pickup modal
+        function openPickupModal(materialId) {
+            document.getElementById('pickupMaterialId').value = materialId;
+            document.getElementById('pickupModal').style.display = 'block';
+            
+            // Reset pickup photos
+            pickupPhotosData = [];
+            document.getElementById('pickupPhotosContainer').innerHTML = '';
+            
+            // Reset camera
+            stopPickupCamera();
+        }
+        
+        // Close pickup modal
+        function closePickupModal() {
+            document.getElementById('pickupModal').style.display = 'none';
+            document.getElementById('pickupForm').reset();
+            
+            // Stop pickup camera if running
+            stopPickupCamera();
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                console.log('Application initialized successfully');
+                
+                // Set up event listeners
+                
+                // Navigation - FIXED: Use event delegation for better reliability
+                document.querySelector('nav').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('nav-btn')) {
+                        const sectionId = e.target.getAttribute('data-section');
+                        if (sectionId) {
+                            showSection(sectionId);
+                        }
+                    }
+                });
+                
+                // Material form submission
+                document.getElementById('materialForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const materialName = document.getElementById('materialName').value;
+                    const materialDepartment = document.getElementById('materialDepartment').value;
+                    const materialQuantity = parseInt(document.getElementById('materialQuantity').value);
+                    const uploadedBy = document.getElementById('uploadedBy').value;
+                    
+                    if (arrivalPhotosData.length === 0) {
+                        alert('Please capture at least one arrival photo');
+                        return;
+                    }
+                    
+                    try {
+                        const material = {
+                            name: materialName,
+                            department: materialDepartment,
+                            quantity: materialQuantity,
+                            status: 'available',
+                            arrival_photos: arrivalPhotosData,
+                            date_added: new Date().toISOString()
+                        };
+                        
+                        const materialId = await addMaterial(material);
+                        
+                        // Add arrival history record
+                        await addHistoryRecord({
+                            material_id: materialId,
+                            type: 'arrival',
+                            date: new Date().toISOString(),
+                            by: uploadedBy,
+                            photos: arrivalPhotosData,
+                            notes: `Material ${materialName} arrived for ${materialDepartment} department`
+                        });
+                        
+                        alert('Material registered successfully!');
+                        document.getElementById('materialForm').reset();
+                        
+                        // Reset arrival photos
+                        arrivalPhotosData = [];
+                        document.getElementById('arrivalPhotosContainer').innerHTML = '';
+                        
+                        // Stop arrival camera if running
+                        stopArrivalCamera();
+                        
+                        // Refresh materials table if we're on that section
+                        if (document.getElementById('materials').classList.contains('active')) {
+                            loadMaterialsTable();
+                        }
+                    } catch (error) {
+                        console.error('Error registering material:', error);
+                        alert('Error registering material. Please try again.');
+                    }
+                });
+                
+                // Arrival camera controls
+                document.getElementById('startArrivalCamera').addEventListener('click', startArrivalCamera);
+                document.getElementById('captureArrivalPhoto').addEventListener('click', captureArrivalPhoto);
+                document.getElementById('stopArrivalCamera').addEventListener('click', stopArrivalCamera);
+                
+                // Pickup camera controls
+                document.getElementById('startPickupCamera').addEventListener('click', startPickupCamera);
+                document.getElementById('capturePickupPhoto').addEventListener('click', capturePickupPhoto);
+                document.getElementById('stopPickupCamera').addEventListener('click', stopPickupCamera);
+                
+                // Pickup form submission
+                document.getElementById('pickupForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const materialId = parseInt(document.getElementById('pickupMaterialId').value);
+                    const pickedUpBy = document.getElementById('pickedUpBy').value;
+                    
+                    if (pickupPhotosData.length === 0) {
+                        alert('Please capture at least one pickup photo');
+                        return;
+                    }
+                    
+                    try {
+                        // Update material status
+                        await updateMaterial(materialId, { status: 'taken' });
+                        
+                        // Add pickup history record
+                        await addHistoryRecord({
+                            material_id: materialId,
+                            type: 'pickup',
+                            date: new Date().toISOString(),
+                            by: pickedUpBy,
+                            photos: pickupPhotosData,
+                            notes: `Material picked up by ${pickedUpBy}`
+                        });
+                        
+                        alert('Material pickup recorded successfully!');
+                        closePickupModal();
+                        
+                        // Refresh materials table
+                        loadMaterialsTable();
+                    } catch (error) {
+                        console.error('Error recording pickup:', error);
+                        alert('Error recording pickup. Please try again.');
+                    }
+                });
+                
+                // Cancel pickup
+                document.getElementById('cancelPickup').addEventListener('click', closePickupModal);
+                
+                // History material selection
+                document.getElementById('historyMaterialSelect').addEventListener('change', function() {
+                    const materialId = parseInt(this.value);
+                    if (materialId) {
+                        loadMaterialHistory(materialId);
+                    } else {
+                        document.getElementById('emptyHistory').style.display = 'block';
+                        document.getElementById('historyList').innerHTML = '';
+                    }
+                });
+                
+                // Image viewer controls
+                document.getElementById('imageViewerClose').addEventListener('click', closeImageViewer);
+                document.getElementById('prevImage').addEventListener('click', prevImage);
+                document.getElementById('nextImage').addEventListener('click', nextImage);
+                
+                // Close modal when clicking outside the image
+                document.getElementById('imageViewerModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeImageViewer();
+                    }
+                });
+                
+                // Close pickup modal when clicking outside
+                document.getElementById('pickupModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closePickupModal();
+                    }
+                });
+                
+                // Initial load
+                loadMaterialsTable();
+                loadMaterialsForHistory();
+                
+            } catch (error) {
+                console.error('Error initializing application:', error);
+                alert('Error initializing application. Please refresh the page.');
+            }
+        });
+    </script>
+</body>
+</html>
