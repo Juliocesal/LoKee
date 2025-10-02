@@ -418,22 +418,243 @@
             margin-top: 15px;
         }
 
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+                margin: 10px auto;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .section {
+                padding: 20px 15px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .camera-preview {
+                height: 250px;
+            }
+
+            .captured-photo-item {
+                width: 100px;
+                height: 100px;
+            }
+
+            .history-photo {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
             nav {
                 flex-direction: column;
+                gap: 8px;
             }
-            
+
+            .nav-btn {
+                width: 100%;
+                padding: 12px;
+            }
+
             .camera-controls {
                 flex-direction: column;
+                gap: 8px;
             }
-            
-            .captured-photos-container {
-                justify-content: center;
+
+            .btn {
+                width: 100%;
+                padding: 12px;
+                margin: 5px 0;
             }
-            
+
             table {
                 display: block;
                 overflow-x: auto;
+                white-space: nowrap;
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+
+            .material-img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .history-item {
+                padding: 15px;
+            }
+
+            .history-header {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .captured-photos-container {
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .modal-img {
+                max-height: 70vh;
+            }
+
+            .modal-nav {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .modal-close {
+                top: 10px;
+                right: 10px;
+            }
+
+            /* Form improvements for mobile */
+            input, select {
+                font-size: 16px; /* Prevents iOS zoom on focus */
+                padding: 10px;
+            }
+
+            label {
+                font-size: 14px;
+            }
+
+            /* Improve touch targets */
+            .remove-photo {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            header p {
+                font-size: 14px;
+            }
+
+            .section {
+                padding: 15px 10px;
+            }
+
+            .camera-preview {
+                height: 200px;
+            }
+
+            .captured-photo-item {
+                width: 80px;
+                height: 80px;
+            }
+
+            .history-photo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .modal-counter {
+                font-size: 14px;
+            }
+
+            /* Stack table on mobile */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: var(--border-radius);
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+                border-bottom: 1px solid #eee;
+            }
+
+            td:before {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                content: attr(data-label);
+                font-weight: bold;
+                text-align: left;
+            }
+
+            td:last-child {
+                border-bottom: none;
+            }
+
+            /* Improve form layout on mobile */
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .photo-container {
+                margin: 10px -10px;
+                border-radius: 0;
+            }
+        }
+
+        /* Additional improvements for larger tablets */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .captured-photos-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .history-photos {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) {
+            .btn:hover {
+                transform: none;
+            }
+
+            .material-img:hover {
+                transform: none;
+            }
+
+            .history-photo:hover {
+                transform: none;
             }
         }
     </style>
@@ -1361,6 +1582,9 @@
                     }
                 });
                 
+                // Initialize mobile enhancements
+                initMobileEnhancements();
+                
                 // Initial load
                 loadMaterialsTable();
                 loadMaterialsForHistory();
@@ -1370,6 +1594,58 @@
                 alert('Error initializing application. Please refresh the page.');
             }
         });
+        
+        // Add mobile-specific enhancements
+        function initMobileEnhancements() {
+            // Add data-label attributes to table cells for mobile view
+            const tables = document.querySelectorAll('table');
+            tables.forEach(table => {
+                const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+                const rows = table.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach((cell, index) => {
+                        cell.setAttribute('data-label', headers[index]);
+                    });
+                });
+            });
+
+            // Improve touch interaction for modals
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                let touchStart = null;
+                
+                modal.addEventListener('touchstart', (e) => {
+                    touchStart = e.touches[0].clientY;
+                }, false);
+
+                modal.addEventListener('touchmove', (e) => {
+                    if (!touchStart) return;
+                    
+                    const touchEnd = e.touches[0].clientY;
+                    const diff = touchStart - touchEnd;
+
+                    if (Math.abs(diff) > 50) {
+                        if (modal.id === 'imageViewerModal') {
+                            closeImageViewer();
+                        } else if (modal.id === 'pickupModal') {
+                            closePickupModal();
+                        }
+                        touchStart = null;
+                    }
+                }, false);
+            });
+
+            // Handle orientation changes
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    if (document.getElementById('materials').classList.contains('active')) {
+                        loadMaterialsTable();
+                    }
+                }, 200);
+            });
+        }
     </script>
 </body>
 </html>
