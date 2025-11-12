@@ -925,7 +925,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     notes: `Material ${materialName} arrived for ${materialDepartment} department`
                 });
                 
-                alert('Material registrado exitosamente!');
                 document.getElementById('materialForm').reset();
                 
                 arrivalPhotosData = [];
