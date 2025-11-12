@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EssilorLuxottica - Sistema de Gestión</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="brand">
+                    <h1 class="brand-title">EssilorLuxottica</h1>
+                    <p class="brand-subtitle">Sistema de Gestión de Inventario</p>
+                </div>
+                <div class="header-controls">
+                    <div class="realtime-indicator">
+                        <span class="realtime-dot"></span>
+                        <span class="realtime-text">En tiempo real</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="main-nav">
+                <button class="nav-btn active" data-section="register">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Registrar Material</span>
+                </button>
+                <button class="nav-btn" data-section="materials">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Inventario</span>
+                </button>
+                <button class="nav-btn" data-section="history">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Historial</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Register Material Section -->
+            <section id="register" class="section active">
+                <div class="section-header">
+                    <h2 class="section-title">Registrar Nuevo Material</h2>
+                    <p class="section-description">Complete la información del material y capture fotos de su llegada</p>
+                </div>
+                
+                <form id="materialForm" class="material-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="materialName" class="form-label">Nombre del Material</label>
+                            <input type="text" id="materialName" class="form-input" placeholder="Ingrese el nombre del material" required>
+                            <div class="form-hint">Nombre descriptivo del material</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="materialDepartment" class="form-label">Departamento</label>
+                            <select id="materialDepartment" class="form-select" required>
+                                <option value="">Seleccionar Departamento</option>
+                                <option value="IT">IT</option>
+                                <option value="Mantenimiento">Mantenimiento</option>
+                                <option value="Facilities">Facilities</option>
+                                <option value="Consumibles">Consumibles</option>
+                                <option value="Oakley">Oakley</option>
+                                <option value="DC">DC</option>
+                                <option value="Enfermería">Enfermería</option>
+                                <option value="RRHH">RRHH</option>
+                                <option value="EHS">EHS</option>
+                                <option value="RX">RX</option>
+                                <option value="LAB">LAB</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="materialQuantity" class="form-label">Cantidad</label>
+                            <input type="number" id="materialQuantity" class="form-input" min="1" value="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="uploadedBy" class="form-label">Registrado Por</label>
+                            <input type="text" id="uploadedBy" class="form-input" placeholder="Nombre de quien registra" required>
+                        </div>
+                    </div>
+                    
+                    <div class="photo-section">
+                        <div class="section-header">
+                            <h3 class="subsection-title">Documentación Fotográfica</h3>
+                            <p class="subsection-description">Capture fotos del material al llegar al almacén</p>
+                        </div>
+                        
+                        <div class="camera-container">
+                            <div class="camera-preview" id="arrivalCameraPreview">
+                                <div class="camera-placeholder">
+                                    <span class="camera-icon">📷</span>
+                                    <p>Vista previa de la cámara</p>
+                                    <small>Inicie la cámara para comenzar</small>
+                                </div>
+                                <video id="arrivalVideo" class="camera-feed" autoplay playsinline></video>
+                            </div>
+                            
+                            <div class="camera-controls">
+                                <button type="button" class="btn btn-outline" id="startArrivalCamera">
+                                    <span class="btn-icon">📷</span>
+                                    Iniciar Cámara
+                                </button>
+                                <button type="button" class="btn btn-primary" id="captureArrivalPhoto" disabled>
+                                    <span class="btn-icon">⭕</span>
+                                    Capturar Foto
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="stopArrivalCamera" disabled>
+                                    <span class="btn-icon">⏹️</span>
+                                    Detener
+                                </button>
+                            </div>
+                            
+                            <div class="captured-photos">
+                                <h4 class="photos-title">Fotos Capturadas</h4>
+                                <div class="photos-grid" id="arrivalPhotosContainer">
+                                    <div class="photo-empty-state">
+                                        <span class="empty-icon">🖼️</span>
+                                        <p>No hay fotos capturadas</p>
+                                        <small>Capture al menos una foto del material</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large" id="submitBtn">
+                            <span class="btn-icon">✅</span>
+                            Registrar Material
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Materials List Section -->
+            <section id="materials" class="section">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h2 class="section-title">Inventario de Materiales</h2>
+                        <p class="section-description">Visualice y gestione todos los materiales del almacén</p>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn btn-outline" id="reloadMaterials">
+                            <span class="btn-icon">🔄</span>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="materials-container">
+                    <div id="materialsTableContainer">
+                        <div class="table-responsive">
+                            <table id="materialsTable" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="photo-column">Foto</th>
+                                        <th>Nombre</th>
+                                        <th>Departamento</th>
+                                        <th class="quantity-column">Cantidad</th>
+                                        <th class="status-column">Estado</th>
+                                        <th class="actions-column">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="materialsTableBody">
+                                    <!-- Materials will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="emptyMaterials" class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <h3 class="empty-title">No hay materiales registrados</h3>
+                            <p class="empty-description">Comience registrando el primer material en el inventario</p>
+                            <button class="btn btn-primary" data-section="register">
+                                <span class="btn-icon">➕</span>
+                                Registrar Material
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Material History Section -->
+            <section id="history" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Historial de Movimientos</h2>
+                    <p class="section-description">Revise el historial completo de entrada y salida de materiales</p>
+                </div>
+                
+                <div class="history-controls">
+                    <div class="form-group">
+                        <label for="historyMaterialSelect" class="form-label">Seleccionar Material</label>
+                        <select id="historyMaterialSelect" class="form-select">
+                            <option value="">Seleccione un material para ver su historial</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="historyContainer" class="history-container">
+                    <div id="emptyHistory" class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <h3 class="empty-title">Sin historial seleccionado</h3>
+                        <p class="empty-description">Seleccione un material para ver su historial completo</p>
+                    </div>
+                    
+                    <div id="historyList" class="history-list">
+                        <!-- History will be populated here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Pickup Modal -->
+        <div id="pickupModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Retirar Material</h2>
+                    <button type="button" id="cancelPickup" class="modal-close">&times;</button>
+                </div>
+                
+                <form id="pickupForm" class="modal-form">
+                    <input type="hidden" id="pickupMaterialId">
+                    
+                    <div class="form-group">
+                        <label for="pickedUpBy" class="form-label">Retirado Por</label>
+                        <input type="text" id="pickedUpBy" class="form-input" placeholder="Nombre de quien retira el material" required>
+                    </div>
+                    
+                    <div class="photo-section">
+                        <h3 class="subsection-title">Documentación de Retiro</h3>
+                        <p class="subsection-description">Capture fotos como evidencia del retiro del material</p>
+                        
+                        <div class="camera-container">
+                            <div class="camera-preview" id="pickupCameraPreview">
+                                <div class="camera-placeholder">
+                                    <span class="camera-icon">📷</span>
+                                    <p>Vista previa de la cámara</p>
+                                    <small>Inicie la cámara para comenzar</small>
+                                </div>
+                                <video id="pickupVideo" class="camera-feed" autoplay playsinline></video>
+                            </div>
+                            
+                            <div class="camera-controls">
+                                <button type="button" class="btn btn-outline" id="startPickupCamera">
+                                    <span class="btn-icon">📷</span>
+                                    Iniciar Cámara
+                                </button>
+                                <button type="button" class="btn btn-primary" id="capturePickupPhoto" disabled>
+                                    <span class="btn-icon">⭕</span>
+                                    Capturar Foto
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="stopPickupCamera" disabled>
+                                    <span class="btn-icon">⏹️</span>
+                                    Detener
+                                </button>
+                            </div>
+                            
+                            <div class="captured-photos">
+                                <h4 class="photos-title">Fotos Capturadas</h4>
+                                <div class="photos-grid" id="pickupPhotosContainer">
+                                    <div class="photo-empty-state">
+                                        <span class="empty-icon">🖼️</span>
+                                        <p>No hay fotos capturadas</p>
+                                        <small>Capture al menos una foto del retiro</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" id="cancelPickupBtn" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="pickupSubmitBtn">
+                            <span class="btn-icon">✅</span>
+                            Confirmar Retiro
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Image Viewer Modal -->
+        <div id="imageViewerModal" class="modal image-viewer-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Vista de Imagen</h2>
+                    <button class="modal-close" id="imageViewerClose">&times;</button>
+                </div>
+                <div class="image-viewer-content">
+                    <img id="modalImage" class="modal-image" alt="Vista ampliada">
+                    <div class="image-controls">
+                        <button class="btn btn-outline" id="prevImage">
+                            <span class="btn-icon">◀</span>
+                            Anterior
+                        </button>
+                        <div class="image-counter" id="imageCounter">1 / 1</div>
+                        <button class="btn btn-outline" id="nextImage">
+                            <span class="btn-icon">▶</span>
+                            Siguiente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Overlay -->
+        <div class="processing-overlay" id="processingOverlay">
+            <div class="processing-spinner">
+                <div class="spinner"></div>
+                <h3>Procesando registro</h3>
+                <p>Por favor espere mientras guardamos la información</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Supabase client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Include application script -->
+    <script src="script.js"></script>
+</body>
+</html>
